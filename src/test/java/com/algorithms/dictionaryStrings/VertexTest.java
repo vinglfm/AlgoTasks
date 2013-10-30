@@ -13,13 +13,13 @@ public class VertexTest extends BaseTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionElementIsNull() {
-        vertex = new Vertex<>(null);
+        vertex = new Vertex<String>(null);
     }
 
     @Test
     public void shouldCreateNearestVertexesOnCreation() {
         String acceptedElement = "element";
-        vertex = new Vertex<>(acceptedElement);
+        vertex = new Vertex<String>(acceptedElement);
 
         TestCase.assertNotNull(vertex.getNearests());
     }
@@ -31,8 +31,8 @@ public class VertexTest extends BaseTest {
     @Test
     @Parameters(method = "getElemsToAdd")
     public void shouldAddVertexToNearestVertexes(String elem) {
-        vertex = new Vertex<>(elem);
-        Vertex<String> nearest = new Vertex<>(elem);
+        vertex = new Vertex<String>(elem);
+        Vertex<String> nearest = new Vertex<String>(elem);
         vertex.addNearest(nearest);
 
         TestCase.assertTrue(contains(vertex.getNearests(), nearest));

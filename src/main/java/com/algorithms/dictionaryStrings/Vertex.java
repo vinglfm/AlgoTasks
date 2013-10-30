@@ -9,7 +9,7 @@ import java.util.HashSet;
  */
 public class Vertex<T> {
     private T value;
-    private Collection<Vertex<T>> nearests = new HashSet<>();
+    private Collection<Vertex<T>> nearests = new HashSet<Vertex<T>>();
 
     /**
      * @param data data that is presented by the vertex
