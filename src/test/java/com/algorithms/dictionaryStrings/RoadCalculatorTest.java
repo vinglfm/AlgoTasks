@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.util.*;
 
 @RunWith(JUnitParamsRunner.class)
-public class RoadCalculatorTest {
+public class RoadCalculatorTest extends BaseTest {
     private RoadCalculator roadCalculator;
 
     public Object[] getInitialDictionaries() throws FileNotFoundException {
 
-        String fileName = "src/test/resources/ten.txt";
         String delimiter = " ";
 
-        return new Object[]{readInitialData(fileName, delimiter)};
+        return new Object[]{readInitialData("src/test/resources/empty.txt", delimiter), readInitialData("src/test/resources/ten.txt", delimiter), readInitialData("src/test/resources/ten_not_present.txt", delimiter)};
     }
 
     private RoadCalculatorDataHolder readInitialData(String fileName, String delimiter) throws FileNotFoundException {
@@ -35,7 +34,7 @@ public class RoadCalculatorTest {
     public void shouldCalculateLowestDistance(RoadCalculatorDataHolder data) {
         roadCalculator = new RoadCalculator(data.inputData);
         Collection<String> calculatedRoad = roadCalculator.calculateRoad(data.from, data.to);
-        TestCase.assertEquals(calculatedRoad, data.outputData);
+        TestCase.assertTrue(equals(calculatedRoad, data.outputData));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -52,7 +51,7 @@ public class RoadCalculatorTest {
      */
     private static final class RoadCalculatorDataHolder {
         private Set<String> inputData = new HashSet<String>();
-        private Set<String> outputData = new HashSet<String>();
+        private Set<String> outputData = new LinkedHashSet<String>();
         private String from;
         private String to;
 
@@ -60,7 +59,7 @@ public class RoadCalculatorTest {
          * @param fileName  name of the file to load data from
          * @param delimiter delimiter for the single data element
          * @throws IncorrectInputException if data is presented isn't in the proper way(specified in comments to class)
-         * @throws FileNotFoundException if file wasn't found
+         * @throws FileNotFoundException   if file wasn't found
          */
         private RoadCalculatorDataHolder(String fileName, String delimiter) throws FileNotFoundException {
             initialize(fileName, delimiter);
@@ -71,24 +70,35 @@ public class RoadCalculatorTest {
             try {
                 br = new BufferedReader(new FileReader(fileName));
 
-                String[] line = br.readLine().split(delimiter);
+                String singleLine = br.readLine();
+                String[] elements;
 
-                for (String data : line) {
-                    inputData.add(data);
+                if(singleLine != null) {
+                    elements = singleLine.split(delimiter);
+                    for (String data : elements) {
+                        inputData.add(data);
+                    }
                 }
 
-                line = br.readLine().split(delimiter);
-                from = line[0];
-                to = line[1];
-
-                line = br.readLine().split(delimiter);
-                for (String data : line) {
-                    outputData.add(data);
+                singleLine = br.readLine();
+                if(singleLine != null) {
+                    elements = singleLine.split(delimiter);
+                    from = elements[0];
+                    to = elements[1];
                 }
+
+                singleLine = br.readLine();
+                if(singleLine != null) {
+                    elements = singleLine.split(delimiter);
+                    for (String data : elements) {
+                        outputData.add(data);
+                    }
+                }
+
             } catch (FileNotFoundException exp) {
                 throw exp;
-            } catch (IOException exp) {
-                throw new IncorrectInputException("File can't be found or input from " + fileName + " isn't in correct order", exp);
+            } catch (Exception exp) {
+                throw new IncorrectInputException("Input from " + fileName + " isn't in correct order, please read javadocs to the RoadCalculatorDataHolder", exp);
             } finally {
                 if (br != null)
                     try {

@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
-public class VertexTest extends BaseTest {
+public class VertexTest {
 
     Vertex<String> vertex;
 
@@ -35,7 +35,7 @@ public class VertexTest extends BaseTest {
         Vertex<String> nearest = new Vertex<String>(elem);
         vertex.addNearest(nearest);
 
-        TestCase.assertTrue(contains(vertex.getNearests(), nearest));
+        TestCase.assertTrue(vertex.getNearests().contains(nearest));
     }
 
 }
